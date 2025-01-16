@@ -1,0 +1,31 @@
+name: Trigger Checkmarx Security Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Trigger Checkmarx Scan
+        run: |
+          curl -X POST "https://us.ast.checkmarx.net/CxRestAPI/sast/scans" \
+          -H "Authorization: Bearer ${{ secrets.eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIzYTI3YmMxMS1kOTc4LTQxZTYtOTY1OS00MmQwYjcxMjRlN2UifQ.eyJpYXQiOjE3MzY5ODQyMTgsImp0aSI6Ijg2YzhlZTI4LWE3YTctNDJkMC1iZGM2LTc2ZTFlM2IwYjBhMyIsImlzcyI6Imh0dHBzOi8vdXMuaWFtLmNoZWNrbWFyeC5uZXQvYXV0aC9yZWFsbXMvZ3VpZGVwb2ludHNlLXBhcnRuZXItbmZyIiwiYXVkIjoiaHR0cHM6Ly91cy5pYW0uY2hlY2ttYXJ4Lm5ldC9hdXRoL3JlYWxtcy9ndWlkZXBvaW50c2UtcGFydG5lci1uZnIiLCJ0eXAiOiJPZmZsaW5lIiwiYXpwIjoiYXN0LWFwcCIsInNpZCI6Ijk0OTJjZDVkLTZlOTUtNDVkMC1iMTcyLTk5ZWY1N2E3OGUzOSIsInNjb3BlIjoib2ZmbGluZV9hY2Nlc3MifQ.4sa0w6xNX6EWNkydiPM5XIMkoV1WmHOQBW3xbRLHdmJPXcihiLSGIEyRg87FeAUkMgypvIlFyWQzDSPYML5UCg }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+                "projectName": "cicidemo",
+                "srcProjectType": "GitHub",
+                "repositoryUrl": "https://github.com/ciarra-k/cicidemo.git",
+                "branch": "main",
+                "scanningPreset": "High",
+                "isIncremental": true
+              }'
